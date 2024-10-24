@@ -1,0 +1,72 @@
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true" # Enable Traefik Dashboard (useful for local testing)
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80" # Define the HTTP entry point
+      - "--entrypoints.web.forwardedHeaders.trustedIPs=0.0.0.0/0"
+    ports:
+      - "80:80"    # Expose HTTP
+      - "8080:8080" # Expose Traefik Dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" # Access Docker socket (read-only)
+    networks:
+      - app-network
+
+  choice-service:
+    build:
+      context: .
+      dockerfile: ./RPSSL.ChoiceService/Dockerfile
+    labels:
+      - "traefik.http.routers.choice-service.rule=Host(`choice.localhost`)"
+      - "traefik.http.services.choice-service.loadbalancer.server.port=80"
+    depends_on:
+      - traefik
+    networks:
+      - app-network
+
+  game-service:
+    build:
+      context: .
+      dockerfile: ./RPSSL.GameService/Dockerfile
+    labels:
+      - "traefik.http.routers.game-service.rule=Host(`game.localhost`)"
+      - "traefik.http.services.game-service.loadbalancer.server.port=80"
+      - "traefik.http.services.game-service.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.game-service.entrypoints=web"
+      - "traefik.http.routers.game-service.middlewares=game-service-websocket"
+      - "traefik.http.middlewares.game-service-websocket.headers.customrequestheaders.Upgrade=websocket"
+      - "traefik.http.middlewares.game-service-websocket.headers.customrequestheaders.Connection=Upgrade"
+      
+    depends_on:
+      - choice-service
+      - traefik
+    networks:
+      - app-network
+
+  rpssl:
+    build:
+      context: ./rpssl
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.http.routers.rpssl-client.rule=Host(`rpssl.localhost`)"
+      - "traefik.http.services.rpssl-client.loadbalancer.server.port=80"
+    depends_on:
+      - game-service
+      - traefik
+      - rpssl.cache
+    networks:
+      - app-network
+
+  rpssl.cache:
+    image: redis:latest
+    restart: always
+    ports:
+    - '6379:6379'
+    networks:
+      - app-network
+      
+networks:
+  app-network:
+    driver: bridge

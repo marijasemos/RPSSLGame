@@ -1,0 +1,19 @@
+# C# ignore
+bin/
+obj/
+*.exe
+*.dll
+.vs/
+
+
+# React ignore
+node_modules/
+build/
+
+# Docker ignore
+*.log
+docker-compose.override.yml
+
+# System files
+.DS_Store
+Thumbs.db
