@@ -9,7 +9,6 @@ namespace RPSSL.GameService.Hubs;
 public class GameHub : Hub
 {
   private readonly IGameSessionService _gameService;
-  private readonly IHttpClientFactory _httpClientFactory;
   private readonly IGameStrategyFactory _strategyFactory;
 
   public GameHub(IGameSessionService gameService, IGameStrategyFactory strategyFactory)
