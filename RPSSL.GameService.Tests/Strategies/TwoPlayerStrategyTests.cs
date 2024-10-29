@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using RPSSL.GameService.Models.Enums;
+﻿using RPSSL.GameService.Models.Enums;
 using RPSSL.GameService.Strategies;
 
 namespace RPSSL.GameService.Tests.Strategies;
@@ -14,19 +13,20 @@ public class TwoPlayerStrategyTests
     _strategy = new TwoPlayerStrategy(_playerOneId, _playerTwoId);
   }
 
-  [Fact]
-  public void GetResult_ShouldReturnCorrectPlayerId()
+  [Theory]
+  [InlineData(ChoiceEnum.Rock, ChoiceEnum.Rock, GameResultEnum.Tie)]
+  [InlineData(ChoiceEnum.Paper, ChoiceEnum.Paper, GameResultEnum.Tie)]
+  [InlineData(ChoiceEnum.Scissors, ChoiceEnum.Scissors, GameResultEnum.Tie)]
+  [InlineData(ChoiceEnum.Rock, ChoiceEnum.Scissors, GameResultEnum.Win)]
+  [InlineData(ChoiceEnum.Scissors, ChoiceEnum.Paper, GameResultEnum.Win)]
+  [InlineData(ChoiceEnum.Paper, ChoiceEnum.Rock, GameResultEnum.Win)]
+  [InlineData(ChoiceEnum.Rock, ChoiceEnum.Paper, GameResultEnum.Lose)]
+  [InlineData(ChoiceEnum.Scissors, ChoiceEnum.Rock, GameResultEnum.Lose)]
+  [InlineData(ChoiceEnum.Paper, ChoiceEnum.Scissors, GameResultEnum.Lose)]
+  public void GetResult_ShouldReturnExpectedResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice, GameResultEnum expectedResult)
   {
-    // Act
-    var result = _strategy.GetResult(ChoiceEnum.Rock, ChoiceEnum.Scissors);
 
-    // Assert
-    result.Should().Be(_playerOneId);
-
-    result = _strategy.GetResult(ChoiceEnum.Paper, ChoiceEnum.Rock);
-    result.Should().Be(_playerOneId);
-
-    result = _strategy.GetResult(ChoiceEnum.Lizard, ChoiceEnum.Rock);
-    result.Should().Be(_playerTwoId);
+    var result = _strategy.GetResult(playerOneChoice, playerTwoChoice);
+    Assert.Equal(expectedResult, result);
   }
 }

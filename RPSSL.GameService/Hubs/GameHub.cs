@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using RPSSL.GameService.Interfaces;
 using RPSSL.GameService.Models.Enums;
-using static RPSSL.GameService.Helpers.MatchEvaluator;
 namespace RPSSL.GameService.Hubs;
 
 /// <summary>
@@ -10,10 +9,14 @@ namespace RPSSL.GameService.Hubs;
 public class GameHub : Hub
 {
   private readonly IGameSessionService _gameService;
+  private readonly IHttpClientFactory _httpClientFactory;
+  private readonly IGameStrategyFactory _strategyFactory;
 
-  public GameHub(IGameSessionService gameService)
+  public GameHub(IGameSessionService gameService, IGameStrategyFactory strategyFactory)
   {
     _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+    _strategyFactory = strategyFactory ?? throw new ArgumentNullException(nameof(strategyFactory));
+
   }
 
   public override async Task OnConnectedAsync()
@@ -74,18 +77,18 @@ public class GameHub : Hub
       var result = await _gameService.MakeMoveAsync(gameCode, playerId, choice);
       if (result.Status == Models.Enums.GameStatusEnum.Finished)
       {
-
         GameResultEnum statusCaller;
-
-        if (result.PlayerOneChoice == result.PlayerTwoChoice)
-          statusCaller = GameResultEnum.Tie;
-        else if (IsWinningMove((ChoiceEnum)result.PlayerOneChoice, (ChoiceEnum)result.PlayerTwoChoice) && result.PlayerOneId == playerId)
-          statusCaller = GameResultEnum.Win;
-        else if (IsWinningMove((ChoiceEnum)result.PlayerTwoChoice, (ChoiceEnum)result.PlayerOneChoice) && result.PlayerTwoId == playerId)
-          statusCaller = GameResultEnum.Win;
+        if (playerId == result.PlayerOneId)
+        {
+          var strategy = _strategyFactory.CreateTwoPlayerStrategy(result.PlayerOneId, result.PlayerTwoId);
+          statusCaller = strategy.GetResult((ChoiceEnum)result.PlayerOneChoice, (ChoiceEnum)result.PlayerTwoChoice);
+        }
         else
-          statusCaller = GameResultEnum.Lose;
+        {
+          var strategy = _strategyFactory.CreateTwoPlayerStrategy(result.PlayerTwoId, result.PlayerOneId);
+          statusCaller = strategy.GetResult((ChoiceEnum)result.PlayerTwoChoice, (ChoiceEnum)result.PlayerOneChoice);
 
+        }
 
         GameResultEnum statusOponent = statusCaller switch
         {

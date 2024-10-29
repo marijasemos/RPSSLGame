@@ -13,13 +13,13 @@ public class RPSSLGameStrategyTests
   }
 
   [Theory]
-  [InlineData(ChoiceEnum.Rock, ChoiceEnum.Scissors, "win")]
-  [InlineData(ChoiceEnum.Paper, ChoiceEnum.Paper, "tie")]
-  [InlineData(ChoiceEnum.Lizard, ChoiceEnum.Scissors, "lose")]
+  [InlineData(ChoiceEnum.Rock, ChoiceEnum.Scissors, "Win")]
+  [InlineData(ChoiceEnum.Paper, ChoiceEnum.Paper, "Tie")]
+  [InlineData(ChoiceEnum.Lizard, ChoiceEnum.Scissors, "Lose")]
   public void GetResult_ShouldReturnExpectedOutcome(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice, string expectedOutcome)
   {
     // Act
-    var result = _strategy.GetResult(playerOneChoice, playerTwoChoice);
+    var result = _strategy.GetResult(playerOneChoice, playerTwoChoice).ToString();
 
     // Assert
     result.Should().Be(expectedOutcome);

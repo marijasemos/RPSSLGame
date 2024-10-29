@@ -40,9 +40,10 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
 builder.Services.AddSignalR();
 builder.Services.AddHttpClient("ChoiceServiceClient", client =>
 {
-  client.BaseAddress = new Uri("http://choice-service"); // Use the Docker service name
+  var baseAddress = builder.Configuration.GetConnectionString("choice-service");
+  client.BaseAddress = new Uri(baseAddress);
   client.DefaultRequestHeaders.Add("Accept", "application/json");
-  client.Timeout = TimeSpan.FromSeconds(30); // Optional: Set a timeout
+  client.Timeout = TimeSpan.FromSeconds(30);
 });
 
 var app = builder.Build();

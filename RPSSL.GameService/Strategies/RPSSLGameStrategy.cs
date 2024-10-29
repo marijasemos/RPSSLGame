@@ -10,13 +10,13 @@ namespace RPSSL.GameService.Strategies;
 public class RPSSLGameStrategy : IGameStrategy
 {
   /// <inheritdoc />
-  public string GetResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice)
+  public GameResultEnum GetResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice)
   {
     if (playerOneChoice == playerTwoChoice)
     {
-      return "Tie";
+      return GameResultEnum.Tie;
     }
 
-    return IsWinningMove(playerOneChoice, playerTwoChoice) ? "Win" : "Lose";
+    return IsWinningMove(playerOneChoice, playerTwoChoice) ? GameResultEnum.Win : GameResultEnum.Lose;
   }
 }

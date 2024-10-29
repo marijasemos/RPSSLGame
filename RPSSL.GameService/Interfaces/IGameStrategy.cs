@@ -13,5 +13,5 @@ public interface IGameStrategy
   /// <param name="playerOneChoice">The choice made by player one.</param>
   /// <param name="playerTwoChoice">The choice made by player two.</param>
   /// <returns>The result of the round: "win", "lose", or "tie".</returns>
-  string GetResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice);
+  GameResultEnum GetResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice);
 }

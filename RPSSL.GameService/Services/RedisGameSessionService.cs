@@ -45,7 +45,6 @@ public class RedisGameSessionService : IGameSessionService
 
     await _distributedCache.SetStringAsync(gameCode, JsonConvert.SerializeObject(session), options);
 
-    //await SaveSessionAsync(gameCode, session);
     _logger.LogInformation("Created new game session. GameCode: {GameCode}, PlayerOneId: {PlayerOneId}", gameCode, playerId);
 
     return new GameInfo { GameCode = gameCode, PlayerId = playerId };

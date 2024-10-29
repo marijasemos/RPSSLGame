@@ -19,13 +19,13 @@ public class TwoPlayerStrategy : IGameStrategy
   }
 
   /// <inheritdoc />
-  public string GetResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice)
+  public GameResultEnum GetResult(ChoiceEnum playerOneChoice, ChoiceEnum playerTwoChoice)
   {
     if (playerOneChoice == playerTwoChoice)
     {
-      return "tie";
+      return GameResultEnum.Tie;
     }
 
-    return IsWinningMove(playerOneChoice, playerTwoChoice) ? _playerOneId : _playerTwoId;
+    return IsWinningMove(playerOneChoice, playerTwoChoice) ? GameResultEnum.Win : GameResultEnum.Lose;
   }
 }

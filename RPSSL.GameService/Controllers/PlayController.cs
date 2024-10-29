@@ -18,8 +18,8 @@ public class PlayController : ControllerBase
   {
     _strategyFactory = strategyFactory ?? throw new ArgumentNullException(nameof(strategyFactory));
     _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    _httpClientFactory = httpClientFactory;
-    _gameService = gameService;
+    _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+    _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
 
   }
   [HttpPost]
@@ -46,7 +46,7 @@ public class PlayController : ControllerBase
 
       return Ok(new PlayResponse
       {
-        Results = result,
+        Results = result.ToString(),
         Player = request.PlayerChoice,
         Computer = computerChoice.Id
       });
