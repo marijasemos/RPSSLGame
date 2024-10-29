@@ -22,19 +22,30 @@ The game logic is containerized and managed using Docker Compose, allowing for e
 
 1. Clone the repository:
     git clone https://github.com/username/RPSSLGame.git
+   
+3. Clone the repository and place in the previous one
+ git clone https://github.com/marijasemos/rpssl.git
+
+RPSSLGame/
+│
+├── RPSSL.ChoiceService/     
+├── RPSSL.PlayService/      
+├── rpssl/          
+├── docker-compose.yml  
+└── README.md          
 
 
-2. Build and run the microservices using Docker Compose:
+5. Build and run the microservices using Docker Compose:
     docker-compose up --build
 
-3. Navigate to the `react-app` directory and install dependencies:
+6. Navigate to the `react-app` directory and install dependencies:
     cd rpssl
     npm install
 
-4. Start the React application
+7. Start the React application
     npm run start
 
-5. Open your web browser and go to `http://localhost:3000` to access the game or http://rpssl.localhost/.
+8. Open your web browser and go to `http://localhost:3000` to access the game or http://rpssl.localhost/.
 
 ##  Play Rules
     - Scissors cuts Paper
